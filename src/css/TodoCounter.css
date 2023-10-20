@@ -18,6 +18,9 @@ body {
     margin: 0;
     padding: 24px;
 }
+.TodoCounter--loading{
+  opacity: 30%;
+}
 
 .TodoSearch {
     background: #F9FBFC;
@@ -43,7 +46,9 @@ body {
   .TodoSearch:focus {
     outline-color: #61DAFA;
   }
-
+.TodoSearch:disabled{
+  opacity: 30%;
+}
   ul {
     margin: 0;
     padding: 0 0 56px 0;

@@ -6,9 +6,12 @@ function TodoList(props){
             {props.error && props.onError()}
             {props.loading && props.onLoading()}
 
-            {(!props.loading && !props.searchedPk.length) && props.onEmpty()}
+            {(!props.loading && !props.totalPokemons) && props.onEmpty()}
 
-           {props.searchedPk.map(props.render)}
+            {(!!props.totalPokemons && !props.searchedPk.length) && props.onEmptySearch(props.searchValue)}
+
+            {props.searchedPk.map(props.children)}
+
             <ul>
                 {props.children}
             </ul>

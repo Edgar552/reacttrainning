@@ -32,37 +32,55 @@ function App() {
 //toda esta informacion es generada por nuestro custom Hook usePokemons
     return(
         <React.Fragment>
-            <PokemonHeader>
+            <PokemonHeader loading={loading}>
                 <TodoCounter
                     totalPokemons={totalPokemons}
                     completedPokemons = {completedPokemons}
+
+
                 />
 
                 <TodoSearch
                     setSearch={setSearch}
-                    searchValue={searchValue}/>
+                    searchValue={searchValue}
+                />
             </PokemonHeader>
             {/*TODO list se convierte en un Render Props*/}
             <TodoList
-                error       = {error}
-                loading     = {loading}
-                searchedPk  = {searchedPokemons}
+                error           = {error}
+                loading         = {loading}
+                searchedPk      = {searchedPokemons}
+                totalPokemons   = {totalPokemons}
+                searchValue     = {searchValue}
 
-                onError     = {()=><ErrorScreen/>}
-                onLoading   = {()=><LoadingScreen/>}
-                onEmpty     = {()=><EmptyScreen/>}
-                render      = {
-                    pokemonList =>(
-                        <TodoItem
-                            key={pokemonList.text}
-                            text={pokemonList.text}
-                            completed={pokemonList.completed}
-                            onComplete={()=>cachedPokemons(pokemonList.text)}
-                            onDelete={()=>uncachedPokemons(pokemonList.text)}
-                        />
-                    )
+                onError         = {()=><ErrorScreen/>}
+                onLoading       = {()=><LoadingScreen/>}
+                onEmpty         = {()=><EmptyScreen/>}
+                onEmptySearch   = {
+                    (searchedText)=> <p>No hay resultados para: {searchedText} </p>
                 }
-            />
+                // renderList      = {pokemonList =>(
+                //                 <TodoItem
+                //                     key={pokemonList.text}
+                //                     text={pokemonList.text}
+                //                     completed={pokemonList.completed}
+                //                     onComplete={()=>cachedPokemons(pokemonList.text)}
+                //                     onDelete={()=>uncachedPokemons(pokemonList.text)}
+                //                 />
+                //             )
+                //         }
+            >
+                {pokemonList =>(
+                                <TodoItem
+                                     key={pokemonList.text}
+                                     text={pokemonList.text}
+                                     completed={pokemonList.completed}
+                                     onComplete={()=>cachedPokemons(pokemonList.text)}
+                                     onDelete={()=>uncachedPokemons(pokemonList.text)}
+                                     />
+                                 )
+                }
+            </TodoList>
 
             {openModal &&(
                 <Modal>

@@ -1,5 +1,5 @@
 import React from "react";
-function TodoSearch({setSearch, searchValue}){
+function TodoSearch({setSearch, searchValue, loading}){
 
     const onSearchValue = (event) =>{
        // console.log(event.target.value);
@@ -12,6 +12,7 @@ function TodoSearch({setSearch, searchValue}){
                 placeholder='Pokemon'
                 value={searchValue}
                 onChange={onSearchValue}
+                disabled ={loading}
                 />    
         </React.Fragment>     
     );

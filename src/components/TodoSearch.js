@@ -1,6 +1,5 @@
 import React from "react";
-
-function TodoSearch({searchValue, setSearch}){
+function TodoSearch({setSearch, searchValue}){
 
     const onSearchValue = (event) =>{
        // console.log(event.target.value);

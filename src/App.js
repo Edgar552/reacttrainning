@@ -1,86 +1,83 @@
 import React from 'react';
-import { TodoCounter } from './TodoCounter';
-import { TodoSearch } from './TodoSearch';
-import { TodoList } from './TodoList';
-import { TodoItem } from './TodoItem';
-import { TodoButton } from './TodoButton';
-import logo from './logo.svg';
-//import './App.css';
-import './TodoCounter.css'
-
-const pokemonList = [
-  {text: 'Pokemon Agua', completed:true},
-  {text: 'Pokemon Fuego', completed:false},
-  {text: 'Pokemon Electrico', completed:false},
-];
+import './css/TodoCounter.css'
+import './css/appStates.css'
+//usePokemons se convierte en un Custom Hook debido a los objetos que exporta
+import {usePokemons} from "./reactContext/pokemonContext";
+import {PokemonHeader} from "./components/PokemonHeader";
+import {TodoCounter} from "./components/TodoCounter";
+import {TodoSearch} from "./components/TodoSearch";
+import {TodoList} from "./components/TodoList";
+import {ErrorScreen} from "./components/appStates/ErrorScreen";
+import {LoadingScreen} from "./components/appStates/LoadingScreen";
+import {EmptyScreen} from "./components/appStates/EmptyScreen";
+import {TodoItem} from "./components/TodoItem";
+import {Modal} from "./components/Modal";
+import {PokemonForm} from "./components/PokemonForm";
+import {TodoButton} from "./components/TodoButton";
 
 function App() {
-    // Estado inicial de nuestros pokemons
-  const [pokemones, setPokemones] = React.useState(pokemonList);
-    // El estado de nuestra búsqueda
-  const [searchValue, setSearch] = React.useState('');
-  //Cantidad total de todos los pokemos atrapados (aquellos true)
-  const completedPokemons = pokemones.filter(pokemon => pokemon.completed).length;
-  //Retorna la cantidad total dentro de nuestro state "pokemones"
-  const totalPokemons = pokemones.length;
-
-
-
-  let searchedPokemons = [];
-// ! = negativo !! = Positivo, por lo tanto 
-//Si la cantidad de elementos dentro de nuestra busqueda NO es mayor o igual a 1 entonces
-//regresa nuestra lista general de pokemons
-  if(!searchValue.length >= 1){
-    searchedPokemons = pokemones;
-  }else{
-    //si ya ingresamos algun caracter comenzara a filtrar
-    searchedPokemons = pokemones.filter(pokemon => {
-      const pokemonText = pokemon.text.toLowerCase();
-      const searchText = searchValue.toLowerCase();
-      
-      return pokemonText.includes(searchText);
-    });
-  }
-
-const cachedPokemons =(text)=>{
-  const pokemonIndex = pokemones.findIndex(pokemon => pokemon.text === text);
-  const newPokeList = [...pokemones];
-  newPokeList[pokemonIndex].completed = true;
-  setPokemones(newPokeList);
-}
-
-const uncachedPokemons =(text)=>{
-  const pokemonIndex = pokemones.findIndex(pokemon => pokemon.text === text);
-  const newPokeList = [...pokemones];
-  newPokeList.splice(pokemonIndex,1);
-  setPokemones(newPokeList);
-}
-
-  return (
-    <React.Fragment>
-      <TodoCounter 
-        total={totalPokemons}
-        completed={completedPokemons}
-        />    
-        <TodoSearch
-        searchValue={searchValue}
-        setSearch={setSearch}
-         />    
-          <TodoList>
-            {searchedPokemons.map(pokemonList =>(
-              <TodoItem 
-                key={pokemonList.text} 
-                text={pokemonList.text}  
-                completed={pokemonList.completed}    
-                onComplete={()=>cachedPokemons(pokemonList.text)}
-                onDelete={()=>uncachedPokemons(pokemonList.text)}             
+    //forma de consumir las propiedades del Hook
+    const { error,
+            loading,
+            searchedPokemons,
+            cachedPokemons,
+            uncachedPokemons,
+            openModal,
+            setOpenModal,
+            totalPokemons,
+            completedPokemons,
+            setSearch,
+            searchValue,
+            addPokemons} = usePokemons();
+//toda esta informacion es generada por nuestro custom Hook usePokemons
+    return(
+        <React.Fragment>
+            <PokemonHeader>
+                <TodoCounter
+                    totalPokemons={totalPokemons}
+                    completedPokemons = {completedPokemons}
                 />
-              ))}
-          </TodoList>
-        <TodoButton/>    
-    </React.Fragment>
 
-  );
+                <TodoSearch
+                    setSearch={setSearch}
+                    searchValue={searchValue}/>
+            </PokemonHeader>
+            {/*TODO list se convierte en un Render Props*/}
+            <TodoList
+                error       = {error}
+                loading     = {loading}
+                searchedPk  = {searchedPokemons}
+
+                onError     = {()=><ErrorScreen/>}
+                onLoading   = {()=><LoadingScreen/>}
+                onEmpty     = {()=><EmptyScreen/>}
+                render      = {
+                    pokemonList =>(
+                        <TodoItem
+                            key={pokemonList.text}
+                            text={pokemonList.text}
+                            completed={pokemonList.completed}
+                            onComplete={()=>cachedPokemons(pokemonList.text)}
+                            onDelete={()=>uncachedPokemons(pokemonList.text)}
+                        />
+                    )
+                }
+            />
+
+            {openModal &&(
+                <Modal>
+                    <PokemonForm
+                        addPokemons={addPokemons}
+                        setOpenModal={setOpenModal}
+                    />
+                </Modal>
+            )}
+
+            <TodoButton
+                setOpenModal = {setOpenModal}
+            />
+        </React.Fragment>
+    );
 }
 
 export default App;

@@ -14,21 +14,23 @@ function App(props){
 }
 
 
-function withGreeting(WrappedComponent){
+const AppWithGreeting= withGreeting(App)("Buenas Tardes");
+
+
+function withGreeting(WrappedAppComponent){
 
     return function WrappedComponentWithGreeting(greeting){
         return function ComponentApp(props){
             return(
                 <React.Fragment>
-                    <WrappedComponent {...props} greeting={greeting}/>
+                    <WrappedAppComponent {...props} greeting={greeting}/>
                     <h2>Buenas Tardes, desde wrapped component</h2>
                 </React.Fragment>
             );
         }
-}
+    }
 }
 
-const AppWithGreeting= withGreeting(App)("Buenas Tardes");
 
 
 root.render(

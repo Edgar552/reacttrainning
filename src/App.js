@@ -1,6 +1,7 @@
 import React from 'react';
 import './css/TodoCounter.css'
 import './css/appStates.css'
+
 //usePokemons se convierte en un Custom Hook debido a los objetos que exporta
 import {usePokemons} from "./reactContext/pokemonContext";
 import {PokemonHeader} from "./components/PokemonHeader";
@@ -14,6 +15,8 @@ import {TodoItem} from "./components/TodoItem";
 import {Modal} from "./components/Modal";
 import {PokemonForm} from "./components/PokemonForm";
 import {TodoButton} from "./components/TodoButton";
+import {ChangeAlert} from "./components/ChangeAlert";
+import {ChangeAlertWithStorageListener} from "./components/ChangeAlert";
 
 function App() {
     //forma de consumir las propiedades del Hook
@@ -28,7 +31,8 @@ function App() {
             completedPokemons,
             setSearch,
             searchValue,
-            addPokemons} = usePokemons();
+            addPokemons,
+            sincronize} = usePokemons();
 //toda esta informacion es generada por nuestro custom Hook usePokemons
     return(
         <React.Fragment>
@@ -94,6 +98,8 @@ function App() {
             <TodoButton
                 setOpenModal = {setOpenModal}
             />
+            <ChangeAlert
+                sincronize={sincronize}/>
         </React.Fragment>
     );
 }

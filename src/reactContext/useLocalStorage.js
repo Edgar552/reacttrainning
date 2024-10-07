@@ -1,8 +1,9 @@
 import React from "react";
 function useLocalStorage(itemName, initialValue){
-    const [error, setError] = React.useState(false);
+    const [sincronized, setSincronized]    = React.useState(true);
+    const [error, setError]     = React.useState(false);
     const [loading, setLoading] = React.useState(true);
-    const [pokemones, setPokemones] = React.useState(initialValue);
+    const [pokemones, setPokemones]      = React.useState(initialValue);
 
     React.useEffect(()=>{
         setTimeout(()=>{
@@ -19,26 +20,34 @@ function useLocalStorage(itemName, initialValue){
                     // Si existen TODOs en el localStorage los regresamos como nuestros todos
                     pokemonList = JSON.parse(localStoragePokemons);
                 }
-                console.log('Effect funcionando')
+                console.log('Effects funcionando')
                 setPokemones((pokemonList));
                 setLoading(false);
+                setSincronized(true)
 
             }
             catch (error){
                 setError(error);
             }
         },3000);
-    },[]);
+    },[sincronized]);
     const UpdatePokemons = (updatedList) => {
         const stringifyPokemons = JSON.stringify(updatedList);
         localStorage.setItem(itemName, stringifyPokemons);
         setPokemones(updatedList);
     };
+
+    const sincronize = () =>{
+      setLoading(true);
+      setSincronized(false);
+    };
+
     return {
         pokemones,
         UpdatePokemons,
         loading,
-        error
+        error,
+        sincronize
     };
 
 }

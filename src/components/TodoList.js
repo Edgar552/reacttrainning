@@ -10,7 +10,7 @@ function TodoList(props){
 
             {(!!props.totalPokemons && !props.searchedPk.length) && props.onEmptySearch(props.searchValue)}
 
-            {props.searchedPk.map(props.children)}
+            {(!props.loading && !props.error) && props.searchedPk.map(props.children)}
 
             <ul>
                 {props.children}

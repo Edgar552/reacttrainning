@@ -3,7 +3,7 @@ import {useLocalStorage} from "./useLocalStorage";
 //Ya no es un React Context si no un custom Hook
 function usePokemons(){
 
-    const {pokemones, UpdatePokemons, loading,error} = useLocalStorage('TODOS_V1',[]);
+    const {pokemones, UpdatePokemons,sincronize ,loading,error} = useLocalStorage('TODOS_V1',[]);
     // El estado de nuestra búsqueda
     const [searchValue, setSearch] = React.useState('');
     //Cantidad total de todos los pokemos atrapados (aquellos true)
@@ -65,7 +65,8 @@ function usePokemons(){
         completedPokemons,
         setSearch,
         searchValue,
-        addPokemons};
+        addPokemons,
+        sincronize};
 }
 // Exportamos nuestro proveedor y nuestro contexto, en el context también esta el consumer, para acceder a nuestro contexto
 export { usePokemons };

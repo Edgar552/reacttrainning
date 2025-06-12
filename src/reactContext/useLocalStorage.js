@@ -1,9 +1,30 @@
 import React from "react";
 function useLocalStorage(itemName, initialValue){
-    const [sincronized, setSincronized]    = React.useState(true);
-    const [error, setError]     = React.useState(false);
-    const [loading, setLoading] = React.useState(true);
-    const [pokemones, setPokemones]      = React.useState(initialValue);
+
+    const[state,dispatch] = React.useReducer(reducer, initialState({initialValue}));
+
+    const {
+        sincronized,
+        error,
+        loading,
+        pokemones,
+    } =  state;
+    // const [sincronized, setSincronized]    = React.useState(true);
+    // const [error, setError]     = React.useState(false);
+    // const [loading, setLoading] = React.useState(true);
+    // const [pokemones, setPokemones]      = React.useState(initialValue);
+
+    const onError = (error)=>{
+        dispatch({type:actionTypes.error, payload: error});
+    }
+
+    const onSuccess = (pokemonList) => {
+        dispatch({type:actionTypes.success, payload:pokemonList})
+    }
+
+    const onSincronize = () => {
+        dispatch({type:actionTypes.sincronize})
+    }
 
     React.useEffect(()=>{
         setTimeout(()=>{
@@ -21,25 +42,24 @@ function useLocalStorage(itemName, initialValue){
                     pokemonList = JSON.parse(localStoragePokemons);
                 }
                 console.log('Effects funcionando')
-                setPokemones((pokemonList));
-                setLoading(false);
-                setSincronized(true)
+                onSuccess(pokemonList);
+                // setLoading(false);
+                // setSincronized(true)
 
             }
             catch (error){
-                setError(error);
+                onError(error);
             }
         },3000);
     },[sincronized]);
     const UpdatePokemons = (updatedList) => {
         const stringifyPokemons = JSON.stringify(updatedList);
         localStorage.setItem(itemName, stringifyPokemons);
-        setPokemones(updatedList);
+        onSuccess(updatedList);
     };
 
     const sincronize = () =>{
-      setLoading(true);
-      setSincronized(false);
+      onSincronize();
     };
 
     return {
@@ -50,6 +70,45 @@ function useLocalStorage(itemName, initialValue){
         sincronize
     };
 
+}
+
+const initialState = ({initialValue}) => ({
+    sincronized: true,
+    error:false,
+    loading:true,
+    pokemones: initialValue,
+});
+
+
+const actionTypes = {
+    error:'error',
+    success:'success',
+    sincronize:'sincronize'
+
+}
+
+const reducerObject = (state,payload)=> ({
+    [actionTypes.error]: {
+        ...state,
+        error:true
+    },
+    [actionTypes.success]: {
+        ...state,
+        error:false,
+        loading:false,
+        sincronized: true,
+        pokemones:payload
+    },
+    [actionTypes.sincronize]: {
+        ...state,
+        loading:true,
+        sincronized: false}
+
+
+});
+
+const reducer = (state, action) =>{
+    return reducerObject(state,action.payload)[action.type] || state;
 }
 
 export {useLocalStorage};
